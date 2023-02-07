@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html>
+<head>
+  <title> Dbog！</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <!-- Bootstrap core CSS -->
+  <!--  https://fastly.jsdelivr.net/npm/@bootcss/v3.bootcss.com@1.0.31/dist/css/bootstrap.min.css -->
+  <link href="/static/bootstrap.min.css" rel="stylesheet">
+  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+  <!--  https://fastly.jsdelivr.net/npm/@bootcss/v3.bootcss.com@1.0.31/assets/css/ie10-viewport-bug-workaround.css -->
+  <link href="/static/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+</head>
+
+<script>
+  var active_card_index = 0
+</script>
+
+<body>
+  <div style="position: absolute; overflow-x: hidden; padding-left:17px; overflow-y: hidden;">
+<!--            HEADER              -->
+
+  <nav class="navbar navbar-mini navbar-inverse">
+        <div class="container">
+
+          <div class="navbar-header">
+            <a class="navbar-brand" href="/"><strong style="font-size: 20px;">Dbog!  数据工具书</strong></a>
+          </div>
+
+          <div id="navbar" class="collapse navbar-collapse" style="float: right; padding-left: 10px;">
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="#">About Us</a></li>
+              <li><a href="#">Contact</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+
+          <div class="navbar-header" style="float: right; padding-top: 10px; padding-right: 180px;">
+            <form action="" method="post" class="form-inline">{% csrf_token %}
+              <input class="input-group input-group-lg" style="width: 300px;" type="text" name="searchstr" placeholder="输入搜索条件，或随机显示">
+              <input class="btn btn-success btn-xs" type="submit" value="换一批">
+            </form>
+          </div>
+
+        </div>
+      </nav>
+
+
+  <div class="container" >
+    <div class = "row">
+
+      <!--            数据集列表              -->
+
+      <div class = "col-md-2 " style="padding-right: 3px;">
+        <center><div class = "col-md-12">
+            <img src="{{ MEDIA_URL }}{{ game.series.cfile }}" alt={{ game.series.name }} class="img-responsive img-thumbnail" />
+        </div>
+        <div class = "col-md-12">
+          <h4>{{ game.series.name }}</h4>
+        </div></center>
+        <div class = "col-md-12">
+          <div class="text-muted">
+          <ul style="padding:0;margin:0;">
+            {%  for g in games %}
+              {% if game == g %}
+                <li style="padding:0;margin:0;border-bottom:3px solid ForestGreen"><a href="{% url 'games:detail' g.id %}">《{{ g.name }}》</a></li>
+              {% else %}
+                <li style="padding:0;margin:0;"><a href="{% url 'games:detail' g.id %}">《{{ g.name }}》</a></li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class = "col-md-10" style="padding-left:20px; margin-bottom: 40px; background-color: write;">
+
+        <!--            展示当前数据集              -->
+
+        <div class = "row" id = "cards_row" style="font-size:110%; color:DimGray; margin-bottom: 20px;">
+          {%  for card in cards %}
+          <div class = "col-md-3" style=" padding: 5px;">
+
+              <ul class="list-group list-group-flush" id = {{ card.id }} style="height:270px; overflow:auto;z-index:0;" >
+                  <li class="list-group-item" style="border:none" ><div style="color:DarkGray; font-size:80%; display:inline-block;">{{ card.game.field_name_1 }}：</div>{{ card.field_1 }}</li>
+                  <li class="list-group-item" style="border:none"><div style="color:DarkGray; font-size:80%; display:inline-block;">{{ card.game.field_name_2 }}：</div>{{ card.field_2 }}</li>
+                  <li class="list-group-item" style="border:none"><div style="color:DarkGray; font-size:80%; display:inline-block;">{{ card.game.field_name_3 }}：</div>{{ card.field_3 }}</li>
+              </ul>
+
+              {% for i in card.diaglist %}
+              <div style="float: left; display: inline_block; padding-left: 8px;">
+                <div style="
+                  width:4px;height:4px;
+                  background-color:red;
+                  border-radius:50%;
+                  text-align:center;color:white;
+                  z-index:1;">
+                </div>
+              </div>
+              {% endfor %}
+
+          </div>
+          {%  endfor %}
+        </div>
+        <hr>
+        <div class = "row" style="padding: 0px;">
+
+          <!--            DIALOGS              -->
+
+        {% for card in cards %}
+          {% if card.diagcount != 0 %}
+          <!--        tab页的对话列表头          -->
+          <div class = "col-md-11" style="padding-left: 10px;" id = "diag_{{ card.id }}">
+
+            <ul id="myTab" class="nav nav-tabs">
+              {% for diag in card.diaglist %}
+                  {% if diag.count != 0 %}
+                    {% if forloop.counter0 == 0 %}
+                  	   <li class="active">
+                    {% else %}
+                       <li>
+                    {% endif %}
+                    <a href='#content_{{ diag.conn }}{{ card.id }}' data-toggle="tab">{{ diag.conn }} <span class="label label-success" style="border-radius: 15px; ">{{ diag.count }}</span></a></li>
+                  {% endif %}
+              {%  endfor %}
+            </ul>
+            <!--       对话内容       -->
+            <div id="myTabContent" class="tab-content">
+                {% for diag in card.diaglist %}
+                  {% if diag.count != 0 %}
+                    {% if forloop.counter0 == 0 %}
+                       <div class="tab-pane fade in active" id = content_{{ diag.conn }}{{ card.id }}>
+                    {% else %}
+                       <div class="tab-pane fade" id = content_{{ diag.conn }}{{ card.id }}>
+                    {% endif %}
+                      <div style="padding-left:25px;padding-right:25px;padding-top:8px; background-color:WhiteSmoke">
+                        {% for dc in diag.cards %}
+                          <div style="background-color:White; padding:0px;">
+                              <div style="padding: 5px; display: inline-block;">
+                                <div style="color:DarkGray; display:inline-block;">{{ dc.game.field_name_1 }}：</div>
+                                {{ dc.field_1 }}</div>
+                              <div style="padding: 5px;display: inline-block;">
+                                <div style="color:DarkGray; display:inline-block;">{{ dc.game.field_name_2 }}：</div>
+                                {{ dc.field_2 }}</div>
+                              <div style="padding: 5px;display: inline-block;">
+                                <div style="color:DarkGray; display:inline-block;">{{ dc.game.field_name_3 }}：</div>
+                                {{ dc.field_3 }}</div>
+                          </div>
+                          <br>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  {% endif %}
+              {%  endfor %}
+            </div>
+
+          </div>
+          {% endif %}
+        {% endfor %}
+
+
+       </div>
+      </div>
+    </div>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://fastly.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="https://fastly.jsdelivr.net/npm/@bootcss/v3.bootcss.com@1.0.31/assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="https://fastly.jsdelivr.net/npm/@bootcss/v3.bootcss.com@1.0.31/dist/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="https://fastly.jsdelivr.net/npm/@bootcss/v3.bootcss.com@1.0.31/assets/js/ie10-viewport-bug-workaround.js"></script>
+
+    <script>
+
+      $(function () {
+      	$("[data-toggle='popover']").popover();
+      });
+
+      function update_cards() {
+
+        // active card will have a green border
+        {%  for card in cards %}
+          var active_card = document.getElementById({{ card.id }});
+          var active_diag = document.getElementById("diag_{{ card.id }}");
+          var active_content = document.getElementById("content_{{ card.id }}");
+          if ({{ card.id }} == active_card_index) {
+            active_card.style.border= '3px solid ForestGreen';
+            //active_card.style.backgroundImage = "url('/static/game_bg.jpg')";
+            if (active_diag) {
+              active_diag.style.display = "inline";
+              active_diag.classList.add('active');
+            }
+          } else {
+            active_card.style.border= '3px solid WhiteSmoke ';
+            active_card.style.backgroundImage = null;
+            if (active_diag) {
+              active_diag.style.display = "none";
+              active_diag.classList.remove('active');
+            }
+          }
+        {% endfor %}
+
+        // hide diags for inactive cards
+        var diags = document.getElementsByClassName('btn btn-default');
+        var i;
+        for (i = 0; i < diags.length; i++) {
+            //diags[i].style.backgroundColor = "red";
+        }
+      }
+      function f (index) {  //事件侦测函数
+        active_card_index = index
+        update_cards()
+      }
+      var active_card
+      {%  for card in cards %}
+        active_card = document.getElementById({{ card.id }});  //获取文本框的指针引用
+        active_card.onclick =  function(){f({{ card.id }})} ;  //注册鼠标单击时事件处理函数
+      {% endfor %}
+
+      active_card_index = {{ cards.first.id }}
+      update_cards()
+
+    </script>
+
+  </div></body>
+</html>

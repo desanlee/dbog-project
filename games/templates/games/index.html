@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html>
+<head>
+  <title> Dbog！</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <!-- Bootstrap core CSS -->
+  <!--  https://fastly.jsdelivr.net/npm/@bootcss/v3.bootcss.com@1.0.31/dist/css/bootstrap.min.css -->
+  <link href="/static/bootstrap.min.css" rel="stylesheet">
+  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+  <!--  https://fastly.jsdelivr.net/npm/@bootcss/v3.bootcss.com@1.0.31/assets/css/ie10-viewport-bug-workaround.css -->
+  <link href="/static/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+</head>
+
+<body>
+<div style="position: absolute; overflow-x: hidden; padding-left:17px; overflow-y: hidden;">
+
+<!--  the header of the page -->
+<nav class="navbar navbar-mini navbar-inverse">
+      <div class="container">
+
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/"><strong style="font-size: 20px;">Dbog!  数据工具书</strong></a>
+        </div>
+
+        <div id="navbar" class="collapse navbar-collapse" style="float: right; padding-left: 10px;">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+<!--  the list of all the serieses -->
+  <div class="container" >
+  {% if series_list %}
+    <div class = "row" id = "cards_row" style="font-size:110%; color:DimGray; margin: 0px;">
+    {% for s in series_list %}
+      <div class = "col-md-4" style="margin-top: 30px; border-bottom: solid 1px #ccc; height: 220px">
+
+              <div class = "col-md-6" style=" padding-right: 0px;">
+                  <img src="{{ MEDIA_URL }}{{ s.cfile }}" alt={{ s.name }} class="img-responsive img-thumbnail" />
+              </div>
+              <div class = "col-md-6" style=" padding-right: 0px;">
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item" style="border:none; color:Black; font-size:110%;">
+                    {% if s.first_game_id != 0 %}
+                      <a href="{% url 'games:detail' s.first_game_id %}">{{ s.name }}</a>
+                    {% else %}
+                      {{ s.name }} <div style="font-size:30%; color:DimGray; margin: 0px;">( 开发中... )</div>
+                    {% endif %}
+                  </li>
+                  <li class="list-group-item" style="border:none; color:DarkGray; font-size:70%;">{{ s.discription }}</li>
+                  <li class="list-group-item" style="border:none; color:DarkGray; font-size:50%;">作者：{{ s.author }}</li>
+                </ul>
+              </div>
+
+      </div>
+    {% endfor %}
+    </div>
+  {% else %}
+    <p>No serieses of books are available.</p>
+  {% endif %}
+
+<!--  the end of this page -->
+
+</div>
+</div>
+</body>
+</html>
