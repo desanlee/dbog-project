@@ -89,7 +89,7 @@
                   <li class="list-group-item" style="border:none"><div style="color:DarkGray; font-size:80%; display:inline-block;">{{ card.game.field_name_3 }}：</div>{{ card.field_3 }}</li>
               </ul>
 
-              {% for i in card.diaglist %}
+              {% for i in card.comments_list %}
               <div style="float: left; display: inline_block; padding-left: 8px;">
                 <div style="
                   width:4px;height:4px;
@@ -107,36 +107,36 @@
         <hr>
         <div class = "row" style="padding: 0px;">
 
-          <!--            DIALOGS              -->
+          <!--            COMMENTS              -->
 
         {% for card in cards %}
-          {% if card.diagcount != 0 %}
+          {% if card.comments_count != 0 %}
           <!--        tab页的对话列表头          -->
-          <div class = "col-md-11" style="padding-left: 10px;" id = "diag_{{ card.id }}">
+          <div class = "col-md-11" style="padding-left: 10px;" id = "comment_{{ card.id }}">
 
             <ul id="myTab" class="nav nav-tabs">
-              {% for diag in card.diaglist %}
-                  {% if diag.count != 0 %}
+              {% for comment in card.comments_list %}
+                  {% if comment.count != 0 %}
                     {% if forloop.counter0 == 0 %}
                   	   <li class="active">
                     {% else %}
                        <li>
                     {% endif %}
-                    <a href='#content_{{ diag.conn }}{{ card.id }}' data-toggle="tab">{{ diag.conn }} <span class="label label-success" style="border-radius: 15px; ">{{ diag.count }}</span></a></li>
+                    <a href='#content_{{ comment.conn }}{{ card.id }}' data-toggle="tab">{{ comment.conn }} <span class="label label-success" style="border-radius: 15px; ">{{ comment.count }}</span></a></li>
                   {% endif %}
               {%  endfor %}
             </ul>
             <!--       对话内容       -->
             <div id="myTabContent" class="tab-content">
-                {% for diag in card.diaglist %}
-                  {% if diag.count != 0 %}
+                {% for comment in card.comments_list %}
+                  {% if comment.count != 0 %}
                     {% if forloop.counter0 == 0 %}
-                       <div class="tab-pane fade in active" id = content_{{ diag.conn }}{{ card.id }}>
+                       <div class="tab-pane fade in active" id = content_{{ comment.conn }}{{ card.id }}>
                     {% else %}
-                       <div class="tab-pane fade" id = content_{{ diag.conn }}{{ card.id }}>
+                       <div class="tab-pane fade" id = content_{{ comment.conn }}{{ card.id }}>
                     {% endif %}
                       <div style="padding-left:25px;padding-right:25px;padding-top:8px; background-color:WhiteSmoke">
-                        {% for dc in diag.cards %}
+                        {% for dc in comment.cards %}
                           <div style="background-color:White; padding:0px;">
                               <div style="padding: 5px; display: inline-block;">
                                 <div style="color:DarkGray; display:inline-block;">{{ dc.game.field_name_1 }}：</div>
@@ -186,30 +186,30 @@
         // active card will have a green border
         {%  for card in cards %}
           var active_card = document.getElementById({{ card.id }});
-          var active_diag = document.getElementById("diag_{{ card.id }}");
+          var active_comment = document.getElementById("comment_{{ card.id }}");
           var active_content = document.getElementById("content_{{ card.id }}");
           if ({{ card.id }} == active_card_index) {
             active_card.style.border= '3px solid ForestGreen';
             //active_card.style.backgroundImage = "url('/static/game_bg.jpg')";
-            if (active_diag) {
-              active_diag.style.display = "inline";
-              active_diag.classList.add('active');
+            if (active_comment) {
+              active_comment.style.display = "inline";
+              active_comment.classList.add('active');
             }
           } else {
             active_card.style.border= '3px solid WhiteSmoke ';
             active_card.style.backgroundImage = null;
-            if (active_diag) {
-              active_diag.style.display = "none";
-              active_diag.classList.remove('active');
+            if (active_comment) {
+              active_comment.style.display = "none";
+              active_comment.classList.remove('active');
             }
           }
         {% endfor %}
 
-        // hide diags for inactive cards
-        var diags = document.getElementsByClassName('btn btn-default');
+        // hide comments for inactive cards
+        var comments = document.getElementsByClassName('btn btn-default');
         var i;
-        for (i = 0; i < diags.length; i++) {
-            //diags[i].style.backgroundColor = "red";
+        for (i = 0; i < comments.length; i++) {
+            //comments[i].style.backgroundColor = "red";
         }
       }
       function f (index) {  //事件侦测函数
