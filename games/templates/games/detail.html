@@ -9,6 +9,7 @@
   <!-- Bootstrap core CSS -->
   <!--  https://fastly.jsdelivr.net/npm/@bootcss/v3.bootcss.com@1.0.31/dist/css/bootstrap.min.css -->
   <link href="/static/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/desan.css" rel="stylesheet">
   <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
   <!--  https://fastly.jsdelivr.net/npm/@bootcss/v3.bootcss.com@1.0.31/assets/css/ie10-viewport-bug-workaround.css -->
   <link href="/static/ie10-viewport-bug-workaround.css" rel="stylesheet">
@@ -19,15 +20,15 @@
   var active_card_index = 0
 </script>
 
-<body>
-  <div style="position: absolute; overflow-x: hidden; padding-left:17px; overflow-y: hidden;">
+<body style="overflow-x: hidden;overflow-y: scroll;">
+  <div style="">
 <!--            HEADER              -->
 
-  <nav class="navbar navbar-mini navbar-inverse">
+  <nav class="navbar-inverse">
         <div class="container">
 
           <div class="navbar-header">
-            <a class="navbar-brand" href="/"><strong style="font-size: 20px;">Dbog!  数据工具书</strong></a>
+            <a class="navbar-brand" href="/"><strong style="font-size: 20px;">Dbog!  数游 - 玩索而有得</strong></a>
           </div>
 
           <div id="navbar" class="collapse navbar-collapse" style="float: right; padding-left: 10px;">
@@ -37,10 +38,15 @@
             </ul>
           </div><!--/.nav-collapse -->
 
-          <div class="navbar-header" style="float: right; padding-top: 10px; padding-right: 180px;">
+          <!--            搜索按钮             -->
+          <div class="navbar-header col-lg-6" style="padding-top:9px; padding-left:20px;">
             <form action="" method="post" class="form-inline">{% csrf_token %}
-              <input class="input-group input-group-lg" style="width: 300px;" type="text" name="searchstr" placeholder="输入搜索条件，或随机显示">
-              <input class="btn btn-success btn-xs" type="submit" value="换一批">
+              <div class="input-group">
+                <input type="text" class="form-control" name="searchstr" placeholder="搜索或随机显示">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="submit">Go!</button>
+                </span>
+              </div><!-- /input-group -->
             </form>
           </div>
 
@@ -53,81 +59,63 @@
 
       <!--            数据集列表              -->
 
-      <div class = "col-md-2 " style="padding-right: 3px;">
+      <div class = "col-md-2 " style="border-radius: 10px; padding: 6px; padding-top: 30px;padding-bottom: 150px;background-color: WhiteSmoke;">
         <center><div class = "col-md-12">
-            <img src="{{ MEDIA_URL }}{{ game.series.cfile }}" alt={{ game.series.name }} class="img-responsive img-thumbnail" />
+            <img style="border-radius: 10px;" src="{{ MEDIA_URL }}{{ game.series.cfile }}" alt={{ game.series.name }} class="img-responsive img-thumbnail" />
         </div>
         <div class = "col-md-12">
           <h4>{{ game.series.name }}</h4>
         </div></center>
+        <div class = "col-md-12">&nbsp</div>
         <div class = "col-md-12">
-          <div class="text-muted">
-          <ul style="padding:0;margin:0;">
+          <ul class="list-unstyled nav nav-pills ">
             {%  for g in games %}
               {% if game == g %}
-                <li style="padding:0;margin:0;border-bottom:3px solid ForestGreen"><a href="{% url 'games:detail' g.id %}">《{{ g.name }}》</a></li>
+                <li style="padding:0;margin:0;border-bottom:3px solid ForestGreen"><a href="{% url 'games:detail' g.id %}">{{ g.name }}</a></li>
               {% else %}
-                <li style="padding:0;margin:0;"><a href="{% url 'games:detail' g.id %}">《{{ g.name }}》</a></li>
+                <li style="padding:0;margin:0;"><a href="{% url 'games:detail' g.id %}">{{ g.name }}</a></li>
               {% endif %}
             {% endfor %}
           </ul>
-          </div>
         </div>
       </div>
 
-      <div class = "col-md-10" style="padding-left:20px; margin-bottom: 40px; background-color: write;">
-
         <!--            展示当前数据集              -->
-
-        <div class = "row" id = "cards_row" style="font-size:110%; color:DimGray; margin-bottom: 20px;">
+      <div class = "col-md-10" style="padding-left:40px; margin-bottom: 10px;">
+        <!--            四张卡片区域              -->
+        <div class = "div_relative" id = "cards_row" style="font-size:110%; margin-bottom: 20px;">
           {%  for card in cards %}
-          <div class = "col-md-3" style=" padding: 5px;">
-
-              <ul class="list-group list-group-flush" id = {{ card.id }} style="height:270px; overflow:auto;z-index:0;" >
-                  <li class="list-group-item" style="border:none" ><div style="color:DarkGray; font-size:80%; display:inline-block;">{{ card.game.field_name_1 }}：</div>{{ card.field_1 }}</li>
-                  <li class="list-group-item" style="border:none"><div style="color:DarkGray; font-size:80%; display:inline-block;">{{ card.game.field_name_2 }}：</div>{{ card.field_2 }}</li>
-                  <li class="list-group-item" style="border:none"><div style="color:DarkGray; font-size:80%; display:inline-block;">{{ card.game.field_name_3 }}：</div>{{ card.field_3 }}</li>
+          <div class = 'div_{{forloop.counter}}' id = {{ card.id }} >
+              <ul class="list-group list-group-flush"  style="height:97%; overflow:auto;z-index:0;" >
+                  <li class="list-group-item" style="border:none; background-color:rgba(0,0,0,0);" ><div style="color:DarkGray; font-size:80%; display:inline-block;">{{ card.game.field_name_1 }}&nbsp</div>{{ card.field_1 }}</li>
+                  <li class="list-group-item" style="border:none; background-color:rgba(0,0,0,0);"><div style="color:DarkGray; font-size:80%; display:inline-block;">{{ card.game.field_name_2 }}&nbsp</div>{{ card.field_2 }}</li>
+                  <li class="list-group-item" style="border:none; background-color:rgba(0,0,0,0);"><div style="color:DarkGray; font-size:80%; display:inline-block;">{{ card.game.field_name_3 }}&nbsp</div>{{ card.field_3 }}</li>
               </ul>
 
-              {% for i in card.comments_list %}
-              <div style="float: left; display: inline_block; padding-left: 8px;">
+              {% if card.comments_list %}
+              <div style="display: inline_block; padding-left: 50%;">
                 <div style="
-                  width:4px;height:4px;
-                  background-color:red;
+                  width:6px;height:6px;
+                  background-color:LimeGreen;
                   border-radius:50%;
                   text-align:center;color:white;
                   z-index:1;">
                 </div>
               </div>
-              {% endfor %}
+              {% endif %}
 
           </div>
           {%  endfor %}
         </div>
-        <hr>
-        <div class = "row" style="padding: 0px;">
 
-          <!--            COMMENTS              -->
-
+        <!--            COMMENTS              -->
+        <div class = "row" style="margin: 10px; padding: 10px; background-color:WhiteSmoke;">
         {% for card in cards %}
           {% if card.comments_count != 0 %}
-          <!--        tab页的对话列表头          -->
-          <div class = "col-md-11" style="padding-left: 10px;" id = "comment_{{ card.id }}">
 
-            <ul id="myTab" class="nav nav-tabs">
-              {% for comment in card.comments_list %}
-                  {% if comment.count != 0 %}
-                    {% if forloop.counter0 == 0 %}
-                  	   <li class="active">
-                    {% else %}
-                       <li>
-                    {% endif %}
-                    <a href='#content_{{ comment.conn }}{{ card.id }}' data-toggle="tab">{{ comment.conn }} <span class="label label-success" style="border-radius: 15px; ">{{ comment.count }}</span></a></li>
-                  {% endif %}
-              {%  endfor %}
-            </ul>
+          <div class = "row" style="padding-top: 10px;" id = "comment_{{ card.id }}" >
             <!--       对话内容       -->
-            <div id="myTabContent" class="tab-content">
+            <div id="myTabContent" class="col-xs-8 tab-content vertical-tab-content" >
                 {% for comment in card.comments_list %}
                   {% if comment.count != 0 %}
                     {% if forloop.counter0 == 0 %}
@@ -135,18 +123,15 @@
                     {% else %}
                        <div class="tab-pane fade" id = content_{{ comment.conn }}{{ card.id }}>
                     {% endif %}
-                      <div style="padding-left:25px;padding-right:25px;padding-top:8px; background-color:WhiteSmoke">
+                      <div style="padding-left:15px;padding-right:15px;padding-top:5px;">
                         {% for dc in comment.cards %}
-                          <div style="background-color:White; padding:0px;">
-                              <div style="padding: 5px; display: inline-block;">
-                                <div style="color:DarkGray; display:inline-block;">{{ dc.game.field_name_1 }}：</div>
-                                {{ dc.field_1 }}</div>
-                              <div style="padding: 5px;display: inline-block;">
-                                <div style="color:DarkGray; display:inline-block;">{{ dc.game.field_name_2 }}：</div>
-                                {{ dc.field_2 }}</div>
-                              <div style="padding: 5px;display: inline-block;">
-                                <div style="color:DarkGray; display:inline-block;">{{ dc.game.field_name_3 }}：</div>
-                                {{ dc.field_3 }}</div>
+                          <div style="border-radius:10px;">
+                              {% if dc.field_1 %}<div style="padding: 5px; display: inline-block;">
+                                <div style="color:DarkGray; display:inline-block;">{{ dc.game.field_name_1 }}&nbsp</div>{{ dc.field_1 }}</div>{% endif %}
+                              {% if dc.field_2 %}<div style="padding: 5px;display: inline-block;">
+                                <div style="color:DarkGray; display:inline-block;">{{ dc.game.field_name_2 }}&nbsp</div>{{ dc.field_2 }}</div>{% endif %}
+                              {% if dc.field_3 %}<div style="padding: 5px;display: inline-block;">
+                                <div style="color:DarkGray; display:inline-block;">{{ dc.game.field_name_3 }}&nbsp</div>{{ dc.field_3 }}</div>{% endif %}
                           </div>
                           <br>
                         {% endfor %}
@@ -155,6 +140,19 @@
                   {% endif %}
               {%  endfor %}
             </div>
+            <!--        tab页的对话列表头          -->
+            <ul id="myTab" class="col-xs-4 nav nav-pills vertical-tab nav-stacked" >
+              {% for comment in card.comments_list %}
+                  {% if comment.count != 0 %}
+                    {% if forloop.counter0 == 0 %}
+                       <li class="active">
+                    {% else %}
+                       <li>
+                    {% endif %}
+                    <a href='#content_{{ comment.conn }}{{ card.id }}' data-toggle="tab"> <span class="label label-primary" style="border-radius: 15px; ">{{ comment.count }}</span>&nbsp{{ comment.conn }}</a></li>
+                  {% endif %}
+              {%  endfor %}
+            </ul>
 
           </div>
           {% endif %}
@@ -184,20 +182,31 @@
       function update_cards() {
 
         // active card will have a green border
+        var zindex = 100;
         {%  for card in cards %}
+          zindex = zindex - 1;
           var active_card = document.getElementById({{ card.id }});
           var active_comment = document.getElementById("comment_{{ card.id }}");
           var active_content = document.getElementById("content_{{ card.id }}");
           if ({{ card.id }} == active_card_index) {
-            active_card.style.border= '3px solid ForestGreen';
+            active_card.style.border= '4px solid DarkGray';
+            active_card.style.zIndex=600;
+            active_card.style.fontSize='125%';
+            active_card.style.color='Black';
+            active_card.style.width='33%';
             //active_card.style.backgroundImage = "url('/static/game_bg.jpg')";
             if (active_comment) {
               active_comment.style.display = "inline";
               active_comment.classList.add('active');
             }
           } else {
-            active_card.style.border= '3px solid WhiteSmoke ';
-            active_card.style.backgroundImage = null;
+            active_card.style.border= '';
+            active_card.style.borderTop= '10px solid White ';
+            active_card.style.borderBottom= '10px solid White ';
+            active_card.style.zIndex=zindex;
+            active_card.style.fontSize='';
+            active_card.style.color='';
+            active_card.style.width='30%';
             if (active_comment) {
               active_comment.style.display = "none";
               active_comment.classList.remove('active');

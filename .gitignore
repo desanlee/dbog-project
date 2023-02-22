@@ -6,3 +6,5 @@ tools/
 
 # I don't know what is the folder uploads for, so ignore it then.
 uploads/
+
+__pycache__
