@@ -1,5 +1,6 @@
-from django.shortcuts import get_object_or_404, render
-
+from django.shortcuts import get_object_or_404, render, HttpResponse
+from io import BytesIO
+import xlwt
 from .models import Series, Game, GameCard
 from tools.langconv import *
 from django.db.models.fields import Field
@@ -201,3 +202,34 @@ def detail(request, game_id):
         'games': games
     }
     return render(request, 'games/detail.html', context)
+
+def download(request, game_id):
+    game = get_object_or_404(Game, pk = game_id)
+    response = HttpResponse(content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = "attachment;filename=dataset.xls"
+
+    wb = xlwt.Workbook(encoding='utf8')
+    sheet = wb.add_sheet('sheet1')
+    sheet.write(0, 0, game.field_name_1)
+    sheet.write(0, 1, game.field_name_2)
+    sheet.write(0, 2, game.field_name_3)
+    sheet.write(0, 3, game.field_name_4)
+    sheet.write(0, 4, game.field_name_5)
+    sheet.write(0, 5, game.field_name_6)
+
+    data_row = 1
+    a = game.game_card.all()
+    for i in a:
+        sheet.write(data_row, 0, i.field_1)
+        sheet.write(data_row, 1, i.field_2)
+        sheet.write(data_row, 2, i.field_3)
+        sheet.write(data_row, 3, i.field_4)
+        sheet.write(data_row, 4, i.field_5)
+        sheet.write(data_row, 5, i.field_6)
+        data_row = data_row + 1
+
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+    response.write(output.getvalue())
+    return response

@@ -8,5 +8,7 @@ urlpatterns = [
     # ex: /
     path('', views.index, name='index'),
     # ex: /5
-    path('<int:game_id>/', views.detail, name='detail')
+    path('<int:game_id>/', views.detail, name='detail'),
+    # ex: /5/download
+    path('<int:game_id>/download', views.download, name='download')
 ]
