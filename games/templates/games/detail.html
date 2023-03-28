@@ -73,14 +73,14 @@
             {%  for g in games %}
             <tr>
               {% if game == g %}
-                <td style="border-radius: 4px; background-color: #dcdcdc; padding:6px;">
+                <td style="border-radius: 4px; background-color: #dcdcdc; padding:6px; font-size:95%;">
               {% else %}
-                <td style="padding:6px;">
+                <td style="padding:6px; font-size:95%;">
               {% endif %}
                 <a href="{% url 'games:detail' g.id %}">{{ g.name }}</a>
               </td>
               <td>
-                <a href="{% url 'games:download' g.id %}" style="padding-left:10px; font-size:85%;">下载</a>
+                <a href="{% url 'games:download' g.id %}" style="padding-left:10px; font-size:85%;">↓</a>
               </td>
             </tr>
             {% endfor %}

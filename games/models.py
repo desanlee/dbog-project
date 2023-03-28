@@ -71,6 +71,7 @@ class CardConnection(models.Model):
         # 实体相似
         FIELDIS = 'FIS', _('Field is： 自己和目标字符串相同')
         FIELDIN = 'FIN', _('Field in： 自己包含于目标字符串中')
+        FIELDHAS = 'FHS', _('Field has： 自己包含目标字符串')
         # 时间段重叠
         TIMEHAS = 'THS', _('Time has： 自己的时间段包含目标时间')
         TIMEIN = 'TIN', _('Time in： 自己的时间包含在目标时间段中')

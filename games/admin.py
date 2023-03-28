@@ -9,7 +9,7 @@ from tools.langconv import *
 
 class ConnectionInline(admin.TabularInline):
     model = CardConnection
-    fields = (('d_game','connection_type'),('s_para_1','s_para_2'),('d_para_1','d_para_2'))
+    fields = (('d_game','connection_type','name','discription'),('s_para_1','s_para_2'),('d_para_1','d_para_2'))
     fk_name = 's_game'
     extra = 0
 

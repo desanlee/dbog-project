@@ -59,6 +59,14 @@ def getDirectComments(ca): #ca is with type of GameCard
             condition["field_"+str(conn.d_para_1)+"__icontains"] = ca.__dict__["field_"+str(conn.s_para_1)]
             comment['cards'] += list(conn.d_game.game_card.filter(**condition).all())[0:5]
             comment['cards'] = list(set(comment['cards']))
+        elif conn.connection_type == 'FHS': # field has
+        # d_para_1 has s_para_1 源字段数据包含目标段数据
+            # condition["field_"+str(conn.d_para_1)+"__icontains"] = ca.__dict__["field_"+str(conn.s_para_1)]
+            condition["field_"+str(conn.d_para_1)+"__in"] = re.split('[\r\n\\,]',ca.__dict__["field_"+str(conn.s_para_1)])
+            comment['cards'] += list(conn.d_game.game_card.filter(**condition).all())[0:5]
+            comment['cards'] = list(set(comment['cards']))
+            print(condition)
+            print(comment['cards'])
         elif conn.connection_type == 'THS': # time has
         # d_para_1 > s_para_1 & < s_para_2 源事件的区间包括目的事件
         # 定义两个源字段一个目标字段
